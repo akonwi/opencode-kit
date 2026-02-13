@@ -5,7 +5,7 @@ OpenCode plugin package for local workflow notifications and runtime toggles.
 ## Features
 
 - Idle notification with terminal bell and optional speech.
-- Error notification with macOS Funk sound and optional speech.
+- Error notification with macOS Funk sound only (no speech).
 - Runtime config reads from `~/.config/opencode/kit.json`.
 - Structured JSON-line logs at `~/.config/opencode/logs/opencode-kit.log`.
 - Local control CLI (no AI turn): `oc-kit`.

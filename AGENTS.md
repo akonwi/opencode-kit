@@ -18,7 +18,7 @@ It captures build/test/lint commands and the repository's code conventions.
 - `src/plugin.ts`: OpenCode plugin entry (`OpencodeKit`)
 - `src/cli.ts`: CLI binary logic for `oc-kit`
 - `src/config.ts`: config schema, sanitization, IO, updates
-- `src/features/sounds.ts`: bells/error sound/speech behavior
+- `src/features/sounds.ts`: bells + idle speech + error sound behavior
 - `src/features/logging.ts`: structured local JSON-line logger
 - `tsup.config.ts`: bundle/declaration config
 - `biome.json`: formatter/linter/import sorting rules

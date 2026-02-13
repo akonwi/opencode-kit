@@ -141,20 +141,11 @@ export async function notifyIdle(
   });
 }
 
-export async function notifyError(
-  message: string,
-  config: KitConfig,
-  logger: Logger,
-): Promise<void> {
+export async function notifyError(config: KitConfig, logger: Logger): Promise<void> {
   await playErrorSound(config, logger);
-
-  if (config.speech.enabled) {
-    const safeMessage = message?.trim() || "Unknown error";
-    await speak(`OpenCode error: ${safeMessage}`, config, logger);
-  }
 
   logger.warn("error.notify", "Error notification processed", {
     bell: config.bells.enabled,
-    speech: config.speech.enabled,
+    speech: false,
   });
 }

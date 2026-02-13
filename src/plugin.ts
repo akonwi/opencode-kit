@@ -99,7 +99,10 @@ export const OpencodeKit: Plugin = async (input) => {
         return;
       }
 
-      await notifyError(getErrorMessage(event), config, logger);
+      logger.warn("error.detected", getErrorMessage(event), {
+        eventType: event.type,
+      });
+      await notifyError(config, logger);
     },
   };
 };
