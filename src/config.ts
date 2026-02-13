@@ -15,7 +15,6 @@ export interface KitConfig {
     voice: string | null;
   };
   debug: {
-    toasts: boolean;
     logLevel: LogLevel;
   };
 }
@@ -35,7 +34,6 @@ const DEFAULT_CONFIG: KitConfig = {
     voice: null,
   },
   debug: {
-    toasts: true,
     logLevel: "info",
   },
 };
@@ -97,7 +95,6 @@ export function sanitizeConfig(input: unknown): KitConfig {
       voice: asOptionalString(rawSpeech.voice, DEFAULT_CONFIG.speech.voice),
     },
     debug: {
-      toasts: asBoolean(rawDebug.toasts, DEFAULT_CONFIG.debug.toasts),
       logLevel: asLogLevel(rawDebug.logLevel, DEFAULT_CONFIG.debug.logLevel),
     },
   };

@@ -132,7 +132,7 @@ export async function notifyIdle(
   }
 
   if (config.speech.enabled && lastAssistantText.trim()) {
-    await speak(`OpenCode is idle. ${lastAssistantText}`, config, logger);
+    await speak(lastAssistantText, config, logger);
   }
 
   logger.debug("idle.notify", "Idle notification processed", {

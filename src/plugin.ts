@@ -1,17 +1,9 @@
 import type { Plugin } from "@opencode-ai/plugin";
-import type { Event, Part } from "@opencode-ai/sdk";
+import type { Event } from "@opencode-ai/sdk";
 
 import { readConfig } from "./config";
 import { createLogger } from "./features/logging";
 import { notifyError, notifyIdle } from "./features/sounds";
-import { emitDebugToast } from "./features/toasts";
-
-function extractText(parts: Part[]): string {
-  return parts
-    .map((part) => (part.type === "text" && typeof part.text === "string" ? part.text : ""))
-    .join(" ")
-    .trim();
-}
 
 function getErrorMessage(event: Event): string {
   if (event.type !== "session.error") {
@@ -48,17 +40,6 @@ export const OpencodeKit: Plugin = async (input) => {
   const lastSpokenMessageBySession = new Map<string, string>();
 
   return {
-    "chat.message": async (event, output): Promise<void> => {
-      const text = extractText(output.parts);
-      if (!text) {
-        return;
-      }
-
-      if (typeof output.message.id === "string") {
-        latestAssistantMessageBySession.set(event.sessionID, output.message.id);
-        latestAssistantTextByMessage.set(output.message.id, text);
-      }
-    },
     event: async ({ event }): Promise<void> => {
       if (event.type === "message.updated") {
         const info = event.properties.info;
@@ -100,13 +81,6 @@ export const OpencodeKit: Plugin = async (input) => {
             sessionID,
             messageID: latestMessageID,
           });
-          await emitDebugToast(
-            input.client,
-            config.debug.toasts,
-            input.directory,
-            "idle duplicate skipped",
-            logger,
-          );
           return;
         }
 
@@ -117,36 +91,15 @@ export const OpencodeKit: Plugin = async (input) => {
             hasText: Boolean(lastText),
           });
           await notifyIdle("", config, logger);
-          await emitDebugToast(
-            input.client,
-            config.debug.toasts,
-            input.directory,
-            "idle no summary",
-            logger,
-          );
           return;
         }
 
         lastSpokenMessageBySession.set(sessionID, latestMessageID);
         await notifyIdle(lastText, config, logger);
-        await emitDebugToast(
-          input.client,
-          config.debug.toasts,
-          input.directory,
-          "idle notification",
-          logger,
-        );
         return;
       }
 
       await notifyError(getErrorMessage(event), config, logger);
-      await emitDebugToast(
-        input.client,
-        config.debug.toasts,
-        input.directory,
-        "error notification",
-        logger,
-      );
     },
   };
 };

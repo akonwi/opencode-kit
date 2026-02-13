@@ -34,7 +34,6 @@ File: `~/.config/opencode/kit.json`
     "voice": null
   },
   "debug": {
-    "toasts": true,
     "logLevel": "info"
   }
 }

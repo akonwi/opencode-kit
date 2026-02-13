@@ -20,7 +20,6 @@ It captures build/test/lint commands and the repository's code conventions.
 - `src/config.ts`: config schema, sanitization, IO, updates
 - `src/features/sounds.ts`: bells/error sound/speech behavior
 - `src/features/logging.ts`: structured local JSON-line logger
-- `src/features/toasts.ts`: optional TUI debug toasts
 - `tsup.config.ts`: bundle/declaration config
 - `biome.json`: formatter/linter/import sorting rules
 
@@ -105,13 +104,13 @@ If these files are added later, update this section and follow them as higher-pr
 - `camelCase` for variables/functions.
 - `PascalCase` for interfaces/types/classes and plugin export names.
 - `UPPER_SNAKE_CASE` for module-level constants.
-- Use descriptive event names and log event keys (e.g., `idle.notify`, `toast.error`).
+- Use descriptive event names and log event keys (e.g., `idle.notify`, `error.notify`).
 - Keep CLI enums literal and explicit (no hidden aliases unless required).
 
 ## Error Handling Philosophy
 
 - This project favors graceful degradation for local-notification features.
-- Wrap platform/tooling side effects (`say`, `afplay`, file appends, toasts) in `try/catch`.
+- Wrap platform/tooling side effects (`say`, `afplay`, file appends) in `try/catch`.
 - Avoid crashing plugin execution for optional capability failures.
 - Log operational failures with context via logger.
 - For config read/parse issues, fall back to sanitized defaults.
@@ -128,7 +127,6 @@ If these files are added later, update this section and follow them as higher-pr
   - `speech.enabled`
   - `speech.maxChars`
   - `speech.voice`
-  - `debug.toasts`
   - `debug.logLevel`
 
 ## Logging Conventions
