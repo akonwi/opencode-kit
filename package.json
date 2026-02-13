@@ -24,6 +24,9 @@
   },
   "keywords": ["opencode", "plugin", "notifications", "speech"],
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@opencode-ai/plugin": "^1.1.64"
   },
