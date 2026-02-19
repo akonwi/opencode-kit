@@ -22,6 +22,9 @@
     "format": "biome format --write .",
     "check": "bun run lint && bun run build"
   },
+  "repository": {
+    "url": "https://github.com/akonwi/opencode-kit"
+  },
   "keywords": ["opencode", "plugin", "notifications", "speech"],
   "license": "MIT",
   "publishConfig": {
