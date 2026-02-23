@@ -20,6 +20,7 @@ It captures build/test/lint commands and the repository's code conventions.
 - `src/config.ts`: config schema, sanitization, IO, updates
 - `src/features/sounds.ts`: bells + idle speech + error sound behavior
 - `src/features/logging.ts`: structured local JSON-line logger
+- `src/features/handoff.ts`: `/handoff` command orchestration
 - `tsup.config.ts`: bundle/declaration config
 - `biome.json`: formatter/linter/import sorting rules
 
@@ -153,6 +154,17 @@ If these files are added later, update this section and follow them as higher-pr
   - `oc-kit speech on|off|toggle|status`
 - Print concise, parseable status lines.
 - Exit with non-zero code for invalid usage.
+
+## Handoff Conventions
+
+- `/handoff` is implemented via plugin command hook (`command.execute.before`).
+- Handoff flow should:
+  - capture source session id
+  - gather compact source context
+  - create a new session via session API
+  - submit a seeded prompt with user next-prompt + compact context + source session id
+  - open TUI session selector to help user switch immediately
+- Use OpenCode default session storage; do not write custom export files for now.
 
 ## Change Management For Agents
 

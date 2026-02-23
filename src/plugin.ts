@@ -1,7 +1,8 @@
 import type { Plugin } from "@opencode-ai/plugin";
-import type { Event } from "@opencode-ai/sdk";
+import type { Config, Event } from "@opencode-ai/sdk";
 
 import { readConfig } from "./config";
+import { runHandoff } from "./features/handoff";
 import { createLogger } from "./features/logging";
 import { notifyError, notifyIdle } from "./features/sounds";
 
@@ -40,6 +41,55 @@ export const OpencodeKit: Plugin = async (input) => {
   const lastSpokenMessageBySession = new Map<string, string>();
 
   return {
+    config: async (config: Config): Promise<void> => {
+      config.command ??= {};
+
+      if (!config.command.handoff) {
+        config.command.handoff = {
+          description: "Start a new session with compacted context",
+          template: "Run plugin handoff with: $ARGUMENTS",
+        };
+      }
+    },
+    "command.execute.before": async (commandInput, output): Promise<void> => {
+      if (commandInput.command !== "handoff" && commandInput.command !== "/handoff") {
+        return;
+      }
+
+      output.parts = [];
+
+      const nextPrompt = commandInput.arguments.trim() || "Continue from this handoff context.";
+
+      logger.info("handoff.command", "Received handoff command", {
+        sessionID: commandInput.sessionID,
+        promptLength: nextPrompt.length,
+      });
+
+      try {
+        const result = await runHandoff(input, logger, commandInput.sessionID, nextPrompt);
+
+        logger.info("handoff.complete", "Handoff completed", {
+          sourceSessionID: result.sourceSessionID,
+          newSessionID: result.newSessionID,
+          promptLength: result.seededPrompt.length,
+        });
+      } catch (error) {
+        output.parts = [];
+        void input.client.tui.showToast({
+          query: { directory: input.directory },
+          body: {
+            title: "opencode-kit handoff",
+            message: "Handoff failed. Check opencode-kit.log for details.",
+            variant: "error",
+            duration: 2800,
+          },
+        });
+        logger.error("handoff.error", "Handoff failed", {
+          sessionID: commandInput.sessionID,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    },
     event: async ({ event }): Promise<void> => {
       if (event.type === "message.updated") {
         const info = event.properties.info;
