@@ -1,6 +1,6 @@
 {
   "name": "@akonwi/opencode-kit",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Personal OpenCode workflow plugin with bells, speech, and runtime toggles",
   "type": "module",
   "main": "./dist/plugin.js",
